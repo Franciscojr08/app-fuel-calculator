@@ -1,47 +1,60 @@
-import { StatusBar } from 'expo-status-bar';
 import {Button, Image, StyleSheet, Text, TextInput, View} from 'react-native';
 import {useState} from "react";
-import { logo } from "./assets/bomba.png"
+import {Alert} from "react-native";
 
 export default function App() {
-  const [base,setBase] = useState();
-  const [altura, setAltura] = useState();
+  const [precoAlcool, setPrecoAlcool] = useState();
+  const [precoGasolina, setPrecoGasolina] = useState();
   const [resultado, setResultado] = useState("");
   
-  function changeBase(base) {
-    setBase(base);
+  const changePrecoAlcool = (alcool) => {
+    setPrecoAlcool(alcool);
     setResultado("");
   }
   
-  function changeAltura(altura) {
-    setAltura(altura);
+  const changePrecoGasolina = (gasolina) => {
+    setPrecoGasolina(gasolina);
     setResultado("");
   }
   
-  function calcular() {
-    if (base == null) {
-      alert("Preencha a base");
+  function calcularRecomendacaoCombustivel() {
+    if (!precoGasolina || precoGasolina == 0 ||
+        !precoAlcool || precoAlcool == 0
+    ) {
+      setResultado("");
+      Alert.alert(
+          "Dados inválidos",
+          "Preencha os campos obrigatórios",
+          [
+            {
+              text: "OK"
+            }
+          ]
+      );
       return;
     }
     
-    if (altura == null) {
-      alert("Preencha a altura");
-      return;
+    let textoRecomendacao = "";
+    let valorReferenciaGasolina = 0.7;
+    let divisaoCombustiveis = precoAlcool / precoGasolina;
+    
+    if (divisaoCombustiveis < valorReferenciaGasolina) {
+      textoRecomendacao = "Recomendamos abastecer com Álcool.";
+    } else {
+      textoRecomendacao = "Recomendamos abastecer com Gasolina.";
     }
     
-    let resultado = (parseFloat(base) * parseFloat(altura)) / 2;
-    let descricaoResultado = `Resultado: ${resultado}`;
-    setResultado(descricaoResultado);
+    setResultado(textoRecomendacao);
   }
   
   return (
     <View style={styles.container}>
       <Image source={require('./assets/bomba.png')} style={{paddingBottom: 20, width: 120, height: 120}}></Image>
 
-      <Text selectionColor='red' style={styles.text}>Insira os dados abaixo para calcular a área do triangulo II</Text>
-      <TextInput value={base} onChangeText={changeBase} keyboardType="numeric" style={styles.input} placeholder={'Base'}></TextInput>
-      <TextInput value={altura} onChangeText={changeAltura} keyboardType="numeric" style={styles.input} placeholder={'Altura'}></TextInput>
-      <Button onPress={calcular} title={"Calcular"}></Button>
+      <Text selectionColor='red' style={styles.text}>Qual a melhor opção ?</Text>
+      <TextInput value={precoAlcool} onChangeText={changePrecoAlcool} keyboardType="numeric" style={styles.input} placeholder={'Álcool'}></TextInput>
+      <TextInput value={precoGasolina} onChangeText={changePrecoGasolina} keyboardType="numeric" style={styles.input} placeholder={'Gasolina'}></TextInput>
+      <Button onPress={calcularRecomendacaoCombustivel} title={"Calcular"}></Button>
       
       <Text style={[styles.resultado, { opacity: resultado ? 1 : 0 }]}>{resultado}</Text>
     </View>
