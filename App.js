@@ -1,19 +1,29 @@
-import {Button, Image, StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  Button,
+  Image, Keyboard,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
+  View
+} from 'react-native';
 import {useState} from "react";
 import {Alert} from "react-native";
 
 export default function App() {
-  const [precoAlcool, setPrecoAlcool] = useState();
-  const [precoGasolina, setPrecoGasolina] = useState();
+  const [precoAlcool, setPrecoAlcool] = useState(0.0);
+  const [precoGasolina, setPrecoGasolina] = useState(0.0);
   const [resultado, setResultado] = useState("");
   
   const changePrecoAlcool = (alcool) => {
-    setPrecoAlcool(alcool);
+    setPrecoAlcool(parseFloat(alcool.replace(",", ".")));
     setResultado("");
   }
   
   const changePrecoGasolina = (gasolina) => {
-    setPrecoGasolina(gasolina);
+    setPrecoGasolina(parseFloat(gasolina.replace(",", ".")));
     setResultado("");
   }
   
@@ -48,16 +58,21 @@ export default function App() {
   }
   
   return (
-    <View style={styles.container}>
-      <Image source={require('./assets/bomba.png')} style={{paddingBottom: 20, width: 120, height: 120}}></Image>
-
-      <Text selectionColor='red' style={styles.text}>Qual a melhor opção ?</Text>
-      <TextInput value={precoAlcool} onChangeText={changePrecoAlcool} keyboardType="numeric" style={styles.input} placeholder={'Álcool'}></TextInput>
-      <TextInput value={precoGasolina} onChangeText={changePrecoGasolina} keyboardType="numeric" style={styles.input} placeholder={'Gasolina'}></TextInput>
-      <Button onPress={calcularRecomendacaoCombustivel} title={"Calcular"}></Button>
-      
-      <Text style={[styles.resultado, { opacity: resultado ? 1 : 0 }]}>{resultado}</Text>
-    </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <Image source={require('./assets/bomba.png')} style={{paddingBottom: 20, width: 120, height: 120}}></Image>
+          
+          <Text style={styles.text}>Qual a melhor opção ?</Text>
+          
+          <Text style={styles.textLabel}>Álcool (preço por litro)</Text>
+          <TextInput value={precoAlcool} onChangeText={changePrecoAlcool} keyboardType="numeric" style={styles.input} placeholder={'Álcool'}></TextInput>
+          <Text style={styles.textLabel}>Gasolina (preço por litro)</Text>
+          <TextInput value={precoGasolina} onChangeText={changePrecoGasolina} keyboardType="numeric" style={styles.input} placeholder={'Gasolina'}></TextInput>
+          <Button onPress={calcularRecomendacaoCombustivel} title={"Calcular"}></Button>
+          
+          <TextInput readOnly="readOnly" style={[styles.resultado, { opacity: resultado ? 1 : 0 }]}>{resultado}</TextInput>
+        </View>
+      </TouchableWithoutFeedback>
   );
 }
 
@@ -70,7 +85,16 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
-    paddingBottom: 10
+    paddingBottom: 10,
+    marginTop: 5,
+    marginBottom: 15,
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  textLabel: {
+    color: 'white',
+    paddingBottom: 10,
+    fontSize: 15
   },
   input: {
     width: 300,
@@ -84,11 +108,13 @@ const styles = StyleSheet.create({
   },
   resultado: {
     width: 300,
-    padding: 10,
-    marginBottom: 12,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 6,
+    paddingRight: 6,
     borderRadius: 5,
     marginTop: 20,
-    backgroundColor: '#ccc',
+    backgroundColor: '#ffd23b',
     color: '#000',
     fontSize: 16,
     fontWeight: 'bold',
