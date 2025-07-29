@@ -19,9 +19,3 @@ O **App Fuel Calculator** é uma aplicação móvel desenvolvida com React Nativ
 - `app.json` – Configurações do projeto Expo
 - `.gitignore` – Arquivos ignorados pelo Git
 - `babel.config.js` – Configuração do Babel
-
-## ▶️ Como Executar o Projeto
-
-1. Clone este repositório:
-   ```bash
-   git clone https://github.com/Franciscojr08/app-fuel-calculator.git
